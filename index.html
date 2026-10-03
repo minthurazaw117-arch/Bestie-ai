@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toxic Bestie AI - Real AI Edition</title>
+    <title>Toxic Bestie AI - Live Gemini Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -23,20 +23,20 @@
 </head>
 <body class="bg-slate-950 h-screen flex flex-col justify-between">
 
-    <!-- 1. Setup Screen & API Key Input -->
+    <!-- 1. Setup Screen -->
     <div id="setupScreen" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-5 my-auto">
             <div class="text-center">
                 <h1 class="text-2xl font-bold text-red-500 mb-1">🔥 Toxic Bestie AI</h1>
-                <p class="text-xs text-slate-400">တကယ့် Gemini AI စွမ်းရည်ဖြင့် အသည်းကွဲသူများကို လာစမည့်စနစ်</p>
+                <p class="text-xs text-slate-400">Gemini AI စွမ်းရည်ဖြင့် အသည်းကွဲသူများကို လာစမည့်စနစ်</p>
             </div>
 
             <!-- Gemini API Key Input -->
             <div class="space-y-1">
                 <label class="text-xs font-bold text-red-400">Google AI Studio API Key ထည့်ရန်:</label>
-                <input type="password" id="apiKeyInput" placeholder="AIzaSy..." 
+                <input type="text" id="apiKeyInput" placeholder="AIzaSy..." 
                     class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
-                <p class="text-[10px] text-slate-500">Google AI Studio မှ အလကားရတဲ့ API Key ကို ထည့်ပေးပါ။</p>
+                <p class="text-[10px] text-slate-500">Google AI Studio (aistudio.google.com) မှ ရယူထားသော API Key ကို ထည့်ပါ။</p>
             </div>
 
             <!-- User Gender Selection -->
@@ -81,7 +81,7 @@
         <div>
             <h1 class="text-base font-bold text-red-500 flex items-center gap-2">
                 <span id="headerAiName">Toxic Bestie</span> 
-                <span class="text-[10px] bg-red-950 text-red-300 px-2 py-0.5 rounded-full border border-red-800">Live AI Mode</span>
+                <span class="text-[10px] bg-red-950 text-red-300 px-2 py-0.5 rounded-full border border-red-800">Live AI</span>
             </h1>
             <p id="headerSubtitle" class="text-[11px] text-slate-400">စကားပြောနေသည်...</p>
         </div>
@@ -91,14 +91,12 @@
     </header>
 
     <!-- Chat Messages Container -->
-    <div id="chatContainer" class="chat-container flex-1 overflow-y-auto p-4 space-y-4 max-w-2xl w-full mx-auto">
-        <!-- Messages will be injected here -->
-    </div>
+    <div id="chatContainer" class="chat-container flex-1 overflow-y-auto p-4 space-y-4 max-w-2xl w-full mx-auto"></div>
 
     <!-- Typing Indicator -->
     <div id="typingIndicator" class="hidden px-4 py-2 max-w-2xl w-full mx-auto flex items-center gap-2 text-xs text-slate-400">
         <div class="bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">AI</div>
-        <span>AI စာစဉ်နေသည် (မင်းကို ဆဲဖို့ စဉ်းစားနေသည်)...</span>
+        <span>AI စာစဉ်နေသည်...</span>
     </div>
 
     <!-- Input Form -->
@@ -113,7 +111,7 @@
         </form>
     </div>
 
-    <!-- JavaScript Logic with Real Gemini API -->
+    <!-- JavaScript Logic -->
     <script>
         let selectedUser = null;
         let selectedAI = null;
@@ -137,7 +135,7 @@
         function checkReady() {
             const btn = document.getElementById('startBtn');
             const keyInput = document.getElementById('apiKeyInput').value.trim();
-            if (selectedUser && selectedAI && keyInput) {
+            if (selectedUser && selectedAI && keyInput.length > 10) {
                 btn.disabled = false;
                 btn.classList.remove('bg-slate-800', 'text-slate-500', 'cursor-not-allowed');
                 btn.classList.add('bg-red-600', 'hover:bg-red-700', 'text-white', 'cursor-pointer');
@@ -151,23 +149,13 @@
             document.getElementById('setupScreen').classList.add('hidden');
             
             const aiNameEl = document.getElementById('headerAiName');
-            aiNameEl.innerText = selectedAI === 'bro' ? '😎 ဂျပိုးဘဲကြီး (Toxic Bro)' : '💅 ပါးစပ်ဆိုးတဲ့ မမကြီး';
+            aiNameEl.innerText = selectedAI === 'bro' ? '😎 ဂျပိုးဘဲကြီး' : '💅 ပါးစပ်ဆိုးတဲ့ မမကြီး';
 
-            // Initial prompt based on persona
-            let initialPrompt = "";
-            if (selectedAI === 'bro' && selectedUser === 'boy') {
-                initialPrompt = "မင်းက ခပ်ကြမ်းကြမ်း၊ ရင်းနှီးတဲ့ ဂျပိုးဘဲကြီး (Toxic Bro) တစ်ယောက်ပါ။ စကားပြောတဲ့အခါ မြန်မာလူငယ်ဆန်ဆန် (ကောင်လေးတစ်ယောက်ကို) ရည်းစားလမ်းခွဲလို့ လာငိုပြတဲ့အခါ ခပ်ပြောင်ပြောင်နဲ့ ဆဲရေးစနောက်ပြီး ပထမဆုံး နှုတ်ဆက်စာ (အတိုဆုံး) စတင်ရေးပေးပါ။";
-            } else if (selectedAI === 'bro' && selectedUser === 'girl') {
-                initialPrompt = "မင်းက ခပ်ကြမ်းကြမ်း၊ ရင်းနှီးတဲ့ ဂျပိုးဘဲကြီး (Toxic Bro) တစ်ယောက်ပါ။ မြန်မာလူငယ်ဆန်ဆန် (ကောင်မလေးတစ်ယောက်ကို) အသည်းကွဲလို့ လာငိုပြတဲ့အခါ ခပ်မထိတထိ ဟာသလုပ်ပြီး ပထမဆုံး နှုတ်ဆက်စာ (အတိုဆုံး) စတင်ရေးပေးပါ။";
-            } else if (selectedAI === 'sister' && selectedUser === 'boy') {
-                initialPrompt = "မင်းက ပါးစပ်ဆိုးပြီး ခပ်စပ်စပ်ပြောတတ်တဲ့ မမကြီး (Toxic Bestie) တစ်ယောက်ပါ။ မြန်မာလူငယ်ဆန်ဆန် (ကောင်လေးတစ်ယောက်ကို) အသည်းကွဲလို့ လာငိုပြတဲ့အခါ လှောင်ပြောင်ပြီး ပထမဆုံး နှုတ်ဆက်စာ (အတိုဆုံး) စတင်ရေးပေးပါ။";
-            } else {
-                initialPrompt = "မင်းက ပါးစပ်ဆိုးပြီး ခပ်စပ်စပ်ပြောတတ်တဲ့ မမကြီး (Toxic Bestie) တစ်ယောက်ပါ။ မြန်မာလူငယ်ဆန်ဆန် (ကောင်မလေးတစ်ယောက်ကို) အသည်းကွဲလို့ လာငိုပြတဲ့အခါ အတူတူ ရည်းစားဟောင်းကို ဆဲဆိုပြီး ပထမဆုံး နှုတ်ဆက်စာ (အတိုဆုံး) စတင်ရေးပေးပါ။";
-            }
-
-            appendMessage("AI က စာစဉ်နေသည်...", 'ai', true);
-            const greeting = await callGeminiAPI(initialPrompt, true);
-            document.getElementById('chatContainer').lastChild.remove(); // Remove loading
+            let initialPrompt = "မင်းက မြန်မာလူငယ်ဆန်ဆန် ခပ်ပြောင်ပြောင်၊ ခပ်ကြမ်းကြမ်း ဟာသလုပ်ပြီး ဆဲဆိုစနောက်တတ်တဲ့ Toxic Bestie AI ပါ။ အသုံးပြုသူက အသည်းကွဲလို့ လာငိုပြတဲ့အခါ ပထမဆုံး နှုတ်ဆက်စာ အတိုဆုံးနဲ့ ခပ်စပ်စပ် စတင်ရေးပေးပါ။";
+            
+            appendMessage("AI စဉ်းစားနေသည်...", 'ai', true);
+            const greeting = await callGeminiAPI(initialPrompt);
+            document.getElementById('chatContainer').lastChild.remove();
             appendMessage(greeting, 'ai');
         }
 
@@ -187,34 +175,22 @@
             typingIndicator.classList.remove('hidden');
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            // Build system persona instructions
-            let persona = selectedAI === 'bro' ? 
-                "မင်းက ရင်းနှီးပြီး ပါးစပ်ဆိုးတဲ့ ဂျပိုးဘဲကြီး (Toxic Bro) ပါ။ အသုံးပြုသူက အသည်းကွဲလို့ သို့မဟုတ် စိတ်ညစ်လို့ လာပြောတဲ့အခါ လုံးဝ မသနားဘဲ ဟာသနှောပြီး ခပ်ပြောင်ပြောင်၊ ခပ်ကြမ်းကြမ်း မြန်မာလို ပြန်ချေပ ဆဲဆိုစနောက်ပါ။ အဆုံးမှာ အကြံဉာဏ်ပေးသလိုလိုနဲ့ ပိုလှောင်ပါ။" :
-                "မင်းက ပါးစပ်ဆိုးပြီး ခပ်စပ်စပ်ပြောတတ်တဲ့ မမကြီး (Toxic Bestie Girl) ပါ။ အသုံးပြုသူက အသည်းကွဲလို့ လာပြောတဲ့အခါ မျက်နှာလိုက်တာမျိုးမရှိဘဲ ခပ်ပြောင်ပြောင်နဲ့ ပြန်လှောင်၊ ဆဲဆိုပြီး စနောက်ပါ။";
-
-            chatHistory.push({ role: "user", parts: [{ text: message }] });
-
-            const aiReply = await callGeminiAPI(message, false, persona);
+            const aiReply = await callGeminiAPI(message);
             
             typingIndicator.classList.add('hidden');
             appendMessage(aiReply, 'ai');
         });
 
-        async function callGeminiAPI(userText, isInitial = false, persona = "") {
+        async function callGeminiAPI(userText) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             
-            let contents = [];
-            if (!isInitial) {
-                contents = chatHistory;
-            } else {
-                contents = [{ role: "user", parts: [{ text: userText }] }];
-            }
+            chatHistory.push({
+                role: "user",
+                parts: [{ text: userText }]
+            });
 
             const body = {
-                system_instruction: {
-                    parts: [{ text: persona || "မင်းက Toxic Bestie AI ဖြစ်ပြီး မြန်မာလူငယ်ဆန်ဆန် ခပ်ပြောင်ပြောင် ဟာသလုပ်ပြီး ဆဲဆိုစနောက်တတ်ရမယ်။" }]
-                },
-                contents: contents
+                contents: chatHistory
             };
 
             try {
@@ -223,17 +199,26 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
                 });
+                
                 const data = await response.json();
+                
+                if (data.error) {
+                    return `⚠️ API Error: ${data.error.message || 'Key မှားနေပါသည် သို့မဟုတ် ခွင့်ပြုချက်မရှိပါ။'}`;
+                }
+
                 if (data.candidates && data.candidates[0].content) {
                     const reply = data.candidates[0].content.parts[0].text;
-                    chatHistory.push({ role: "model", parts: [{ text: reply }] });
+                    chatHistory.push({
+                        role: "model",
+                        parts: [{ text: reply }]
+                    });
                     return reply;
                 } else {
-                    return "ဟဲ့... API Key မှားနေလား မသိဘူး၊ စာလို့မရတော့ဘူး။ ပြန်စစ်စမ်း။ 😒";
+                    return "ဟဲ့... အလုပ်မလုပ်တော့ဘူး၊ API Key သို့မဟုတ် ကွန်ရက် ပြန်စစ်စမ်း။ 😒";
                 }
             } catch (err) {
                 console.error(err);
-                return "ကွန်ရက်ချိတ်ဆက်မှု မကောင်းလို့ မင်းပြောတာကို မကြားရဘူး။ ထပ်ပြောစမ်း! 😤";
+                return "ဖမ်းလို့မမိဘူး၊ ကွန်ရက် ချိတ်ဆက်မှု အမှားအယွင်း ရှိနေတယ်။ 😤";
             }
         }
 
